@@ -2,10 +2,10 @@ import streamlit as st
 from PIL import Image
 from io import BytesIO
 import requests
+import katonic
+from katonic.ml.client import MLClient
 
-import neattext as nt
-import neattext.functions as nfx
-from joblib import dump, load
+from joblib import load
 import pickle
 
 response = requests.get(url='https://katonic.ai/favicon.ico')
@@ -38,10 +38,15 @@ if predict:
 
     vectorize = load("CountVectorizer.joblib")
     X = vectorize.transform(content)
-    with open('naive_bayes_model_20220405-082618.pkl', "rb") as pkl_file:
-        classifnb = pickle.load(pkl_file)
 
-    predsnb = classifnb.predict(X)
+    transformer = load("TFIDF_transformer.joblib")
+    X = transformer.transform(X)
+
+    location = 's3://models/20/1ba512bc495c434cb666d175a604e5a4/artifacts/movie_genre_testcase_20_random_forest_classifier'
+    mlc = MLClient(exp_name="movie_genre_testcase")
+    model_ml = mlc.load_model(location)
+
+    predsnb = model_ml.predict(X)
     infer_preds = []
     pred_genres = []
     movie_label_scores = predsnb[0]
