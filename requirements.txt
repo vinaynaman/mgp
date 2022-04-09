@@ -26,7 +26,7 @@ cmd2==2.4.0
 cmdstanpy==0.9.5
 colorama==0.4.4
 colorlog==6.6.0
-conda==4.11.0
+conda==4.1.2
 cycler==0.11.0
 databricks-cli==0.16.6
 debugpy==1.6.0
