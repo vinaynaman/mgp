@@ -2,11 +2,16 @@ import streamlit as st
 from PIL import Image
 from io import BytesIO
 import requests
+
+# import os
+# os.system("pip install katonic-1.0-py3-none-any.whl")
+
 import katonic
 from katonic.ml.client import MLClient
 
 from joblib import load
 import pickle
+import joblib
 
 response = requests.get(url='https://katonic.ai/favicon.ico')
 im = Image.open(BytesIO(response.content))
@@ -42,9 +47,7 @@ if predict:
     transformer = load("TFIDF_transformer.joblib")
     X = transformer.transform(X)
 
-    location = 's3://models/20/1ba512bc495c434cb666d175a604e5a4/artifacts/movie_genre_testcase_20_random_forest_classifier'
-    mlc = MLClient(exp_name="movie_genre_testcase")
-    model_ml = mlc.load_model(location)
+    model_ml = joblib.load("best_model.joblib")
 
     predsnb = model_ml.predict(X)
     infer_preds = []
